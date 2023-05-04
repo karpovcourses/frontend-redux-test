@@ -5,7 +5,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 interface Props {
   id: string;
   name: string;
-  description: string;
+  info: string;
   image: string;
   price: number;
   onDelete: (id: string) => any;
@@ -14,7 +14,7 @@ interface Props {
 export const CartItem: FC<Props> = ({
   id,
   name,
-  description,
+  info,
   price,
   image,
   onDelete
@@ -35,7 +35,7 @@ export const CartItem: FC<Props> = ({
       <List.Item.Meta
         avatar={<Avatar src={image} />}
         title={name}
-        description={description}
+        description={info}
       />
       <div>
         {price.toLocaleString("ru-RU", {

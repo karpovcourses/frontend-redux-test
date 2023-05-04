@@ -2,6 +2,10 @@ import React, { FC } from "react";
 import { Modal, List, message } from "antd";
 
 import { CartItem } from "../CartItem/CartItem";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteItemCart, clearCart } from "../../store/actions";
+import { Dispatch } from "../../store";
+import { getCart } from "../../store/selectors";
 
 interface Props {
   isOpen: boolean;
@@ -9,22 +13,16 @@ interface Props {
 }
 
 export const CartModal: FC<Props> = ({ isOpen, onClose }) => {
-  const data = [
-    {
-      id: "2",
-      name: "Название еды 2",
-      description: "Самая лучшая еда 2",
-      image: "http://placeimg.com/640/480/any",
-      price: 147
-    },
-    {
-      id: "3",
-      name: "Название еды 3",
-      description: "Самая лучшая еда 3",
-      image: "http://placeimg.com/640/480/any",
-      price: 258
-    }
-  ];
+  const dispatch = useDispatch<Dispatch>();
+  const cart = useSelector(getCart);
+
+  const onDelete = (id: string) => {
+    dispatch(deleteItemCart(id));
+  };
+
+  const onClear = () => {
+    dispatch(clearCart());
+  };
 
   return (
     <Modal
@@ -33,9 +31,10 @@ export const CartModal: FC<Props> = ({ isOpen, onClose }) => {
       onOk={() => {
         message.success("Оплачено");
         onClose();
+        onClear();
       }}
       onCancel={onClose}
-      okText={`Оплатить ${data
+      okText={`Оплатить ${cart
         .reduce((sum, item) => (sum += item.price), 0)
         .toLocaleString("ru-RU", {
           style: "currency",
@@ -46,8 +45,8 @@ export const CartModal: FC<Props> = ({ isOpen, onClose }) => {
     >
       <List
         itemLayout="horizontal"
-        dataSource={data}
-        renderItem={(item) => <CartItem {...item} onDelete={console.log} />}
+        dataSource={cart}
+        renderItem={(item) => <CartItem {...item} onDelete={onDelete} />}
       />
     </Modal>
   );
